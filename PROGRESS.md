@@ -27,12 +27,17 @@ and shows "connected", with schema, CI, and docs in place.
 - [x] Archive Vite prototype to `archive/vite-prototype`; repoint `origin` to new repo.
 - [x] Salvage demo-script content + banking intents/documents from the old `mockData.js`.
 - [x] Root config: `README.md`, `PROGRESS.md`, security-hardened `.gitignore`, `LICENSE`, `docs/`.
-- [x] `api/` FastAPI scaffold: `/health`, settings, logging, CORS, Dockerfile, tests. *(verified 2026-06-17: pytest 2 passed, ruff/bandit/pip-audit clean)*
-- [x] `web/` Next.js scaffold: landing page calling `/health` → shows connected status. *(present in working tree; `npm run build`/typecheck not yet re-verified — pending)*
-- [ ] Supabase migrations (all tables + RLS) + `seed.sql` (7 banking processes, 2 customers).
-- [ ] CI (`ci.yml`) + deploy (`deploy-api.yml`) + Dependabot.
-- [ ] **PAUSE 1 — collect credentials** (GCP, Supabase, Vercel, Sarvam) then deploy.
+- [x] `api/` FastAPI scaffold: `/health`, settings, logging, CORS, Dockerfile, tests. *(verified 2026-06-17: pytest 2 passed; ruff, ruff format, bandit, mypy --strict, pip-audit all clean)*
+- [x] `web/` Next.js scaffold: landing page calling `/health` → shows connected status. *(verified 2026-06-17: `npm run build`, `tsc --noEmit`, and `eslint .` all clean; pinned Next 15.5.19)*
+- [x] Supabase migrations (all tables + RLS) + `seed.sql` (7 banking processes, 2 customers).
+- [x] CI (`ci.yml`) + deploy (`deploy-api.yml`) + Dependabot.
+- [x] Committed in logical units and pushed `main` + `archive/vite-prototype` to the new repo.
+- [ ] **▶ PAUSE 1 — awaiting credentials** (GCP/Vertex, Supabase, Sarvam, Vercel + GitHub
+      secrets) before provisioning the Supabase project and deploying to Cloud Run / Vercel.
 - [ ] Acceptance: Vercel URL loads and shows live Cloud Run `/health` "connected".
+
+> **Status:** Phase 0 scaffold is complete, validated, and pushed. The only remaining Phase 0
+> work is **deployment**, which is blocked on PAUSE 1 credentials (see "Open items" below).
 
 ### Phase 1 — Core voice loop — _not started_
 ### Phase 2 — Persistence & dashboard — _not started_
