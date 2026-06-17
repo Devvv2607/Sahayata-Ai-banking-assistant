@@ -4,10 +4,45 @@ node_modules/
 dist/
 build/
 .vite/
-# Env
+# Env (NEVER COMMIT real env files; .env.example is allowed)
 .env
+.env.*
 .env.local
 .env.*.local
+!.env.example
+
+# Secrets & credentials (NEVER COMMIT)
+*.pem
+*.key
+*-sa.json
+*service-account*.json
+*credentials*.json
+gcp-key.json
+secrets/
+
+# Python / FastAPI (api/)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Next.js (web/)
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+audit.json
+
+# Supabase
+supabase/.branches/
+supabase/.temp/
 # Editor
 .vscode/
 .idea/
