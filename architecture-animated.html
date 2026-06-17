@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multilingual Voice & Sign Language Banking Assistant - System Flow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            text-align: center;
+            background: linear-gradient(135deg, #1a237e 0%, #6a1b9a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Layer boxes */
+        .layer-box {
+            stroke-width: 3;
+            fill: none;
+            rx: 12;
+            ry: 12;
+        }
+
+        .layer-label {
+            font-weight: 800;
+            font-size: 14px;
+            text-anchor: middle;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Component styling */
+        .component {
+            stroke-width: 2;
+            rx: 8;
+            ry: 8;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .component-text {
+            font-size: 12px;
+            font-weight: 700;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        /* Arrow animations */
+        .flow-arrow {
+            stroke-width: 2.5;
+            fill: none;
+            opacity: 0.85;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+        }
+
+        @keyframes dash-animation {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .animated-dash {
+            stroke-dasharray: 8, 4;
+            stroke-dashoffset: 12;
+            animation: dash-animation 0.5s linear infinite;
+        }
+
+        @keyframes pulse-flow {
+            0% { opacity: 0.4; stroke-width: 2.5; }
+            50% { opacity: 1; stroke-width: 3.5; }
+            100% { opacity: 0.4; stroke-width: 2.5; }
+        }
+
+        .pulse-arrow {
+            animation: pulse-flow 1.5s ease-in-out infinite;
+        }
+
+        /* Connection dots */
+        .connector-dot {
+            fill: white;
+            stroke-width: 2;
+            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+        }
+
+        /* Legend */
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 40px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.03) 0%, rgba(106, 27, 154, 0.03) 100%);
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 4px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦 Multilingual Voice & Sign Language Banking Assistant</h1>
+        <p class="subtitle">System Architecture with Clear Data Flow Pathways</p>
+
+        <svg viewBox="0 0 2000 1400" xmlns="http://www.w3.org/2000/svg">
+<body>
+    <div class="container">
+        <h1>� MULTILINGUAL GEN-AI VOICE & SIGN LANGUAGE ASSISTANT</h1>
+        <p class="subtitle">Advanced Multi-Modal Real-Time Banking Assistant for <span>Branch Staff</span></p>
+        
+        <div class="feature-banner">
+            <div class="feature-badge">
+                <span>🎤</span> Voice Recognition
+            </div>
+            <div class="feature-badge">
+                <span>🤟</span> Sign Language Recognition
+            </div>
+            <div class="feature-badge">
+                <span>🧠</span> AI Intelligence
+            </div>
+            <div class="feature-badge">
+                <span>🌍</span> Multi-Lingual
+            </div>
+            <div class="feature-badge">
+                <span>🏦</span> Banking Context
+            </div>
+            <div class="feature-badge">
+                <span>📊</span> Staff Dashboard
+            </div>
+        </div>
+
+        <svg viewBox="0 0 1800 1400" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 1800 1400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Define markers for arrows -->
+            <defs>
+                <marker id="arrowhead" markerWidth="15" markerHeight="15" refX="12" refY="4" orient="auto">
+                    <polygon points="0 0, 15 4, 0 8" fill="#333"/>
+                </marker>
+                <marker id="arrowhead-red" markerWidth="15" markerHeight="15" refX="12" refY="4" orient="auto">
+                    <polygon points="0 0, 15 4, 0 8" fill="#FF6B6B"/>
+                </marker>
+                <marker id="arrowhead-cyan" markerWidth="15" markerHeight="15" refX="12" refY="4" orient="auto">
+                    <polygon points="0 0, 15 4, 0 8" fill="#4ECDC4"/>
+                </marker>
+                <marker id="arrowhead-blue" markerWidth="15" markerHeight="15" refX="12" refY="4" orient="auto">
+                    <polygon points="0 0, 15 4, 0 8" fill="#45B7D1"/>
+                </marker>
+                <marker id="arrowhead-green" markerWidth="15" markerHeight="15" refX="12" refY="4" orient="auto">
+                    <polygon points="0 0, 15 4, 0 8" fill="#96CEB4"/>
+                </marker>
+                <marker id="arrowhead-yellow" markerWidth="15" markerHeight="15" refX="12" refY="4" orient="auto">
+                    <polygon points="0 0, 15 4, 0 8" fill="#FFEAA7"/>
+                </marker>
+                <marker id="arrowhead-pink" markerWidth="15" markerHeight="15" refX="12" refY="4" orient="auto">
+                    <polygon points="0 0, 15 4, 0 8" fill="#FF8B94"/>
+                </marker>
+            </defs>
+
+            <!-- ============ LAYER 1: DUAL INPUT CAPTURE ============ -->
+            <!-- VOICE INPUT PATH -->
+            <rect x="40" y="40" width="320" height="150" class="layer-bg" fill="#e1f5ff"/>
+            <rect x="40" y="40" width="320" height="150" stroke="#01579B" stroke-width="3" rx="10" fill="none"/>
+            <text x="200" y="65" class="layer-label" fill="#01579B">🎤 VOICE INPUT</text>
+
+            <rect x="60" y="85" width="280" height="35" class="component-box" stroke="#0288D1"/>
+            <text x="200" y="105" class="component-text" fill="#01579B">Customer Speech Input</text>
+
+            <rect x="60" y="130" width="280" height="35" class="component-box" stroke="#0288D1"/>
+            <text x="200" y="150" class="component-text" fill="#01579B">Microphone Audio Capture</text>
+
+            <!-- SIGN LANGUAGE INPUT PATH -->
+            <rect x="420" y="40" width="320" height="150" class="layer-bg" fill="#ffe0b2"/>
+            <rect x="420" y="40" width="320" height="150" stroke="#E65100" stroke-width="3" rx="10" fill="none"/>
+            <text x="580" y="65" class="layer-label" fill="#E65100">🤟 SIGN LANGUAGE INPUT</text>
+
+            <rect x="440" y="85" width="280" height="35" class="component-box" stroke="#FF6F00"/>
+            <text x="580" y="105" class="component-text" fill="#E65100">Real-time Gesture Capture</text>
+
+            <rect x="440" y="130" width="280" height="35" class="component-box" stroke="#FF6F00"/>
+            <text x="580" y="150" class="component-text" fill="#E65100">Vision-based Motion Tracking</text>
+
+            <!-- ============ LAYER 2: INPUT PROCESSING ============ -->
+            <!-- VOICE PROCESSING -->
+            <rect x="40" y="250" width="320" height="160" class="layer-bg" fill="#f3e5f5"/>
+            <rect x="40" y="250" width="320" height="160" stroke="#7B1FA2" stroke-width="3" rx="10" fill="none"/>
+            <text x="200" y="275" class="layer-label" fill="#7B1FA2">🔊 VOICE PROCESSING</text>
+
+            <rect x="60" y="300" width="280" height="28" class="component-box" stroke="#7B1FA2"/>
+            <text x="200" y="317" class="component-text" fill="#333">Noise Reduction</text>
+
+            <rect x="60" y="335" width="280" height="28" class="component-box" stroke="#7B1FA2"/>
+            <text x="200" y="352" class="component-text" fill="#333">Voice Activity Detection</text>
+
+            <rect x="60" y="370" width="280" height="28" class="component-box" stroke="#7B1FA2"/>
+            <text x="200" y="387" class="component-text" fill="#333">Speech-to-Text (Whisper)</text>
+
+            <!-- SIGN LANGUAGE PROCESSING -->
+            <rect x="420" y="250" width="320" height="160" class="layer-bg" fill="#fce4ec"/>
+            <rect x="420" y="250" width="320" height="160" stroke="#C2185B" stroke-width="3" rx="10" fill="none"/>
+            <text x="580" y="275" class="layer-label" fill="#C2185B">🤖 SIGN RECOGNITION</text>
+
+            <rect x="440" y="300" width="280" height="28" class="component-box" stroke="#C2185B"/>
+            <text x="580" y="317" class="component-text" fill="#333">Hand Pose Detection</text>
+
+            <rect x="440" y="335" width="280" height="28" class="component-box" stroke="#C2185B"/>
+            <text x="580" y="352" class="component-text" fill="#333">Gesture Recognition AI</text>
+
+            <rect x="440" y="370" width="280" height="28" class="component-box" stroke="#C2185B"/>
+            <text x="580" y="387" class="component-text" fill="#333">Sign-to-Text Conversion</text>
+
+            <!-- ============ LAYER 3: LANGUAGE DETECTION & UNIFICATION ============ -->
+            <rect x="820" y="40" width="340" height="370" class="layer-bg" fill="#e8f5e9"/>
+            <rect x="820" y="40" width="340" height="370" stroke="#1B5E20" stroke-width="3" rx="10" fill="none"/>
+            <text x="990" y="70" class="layer-label" fill="#1B5E20">🧠 LANGUAGE INTELLIGENCE</text>
+
+            <rect x="845" y="100" width="290" height="32" class="component-box" stroke="#2E7D32"/>
+            <text x="990" y="120" class="component-text" fill="#333">Language Detection</text>
+
+            <rect x="845" y="145" width="290" height="32" class="component-box" stroke="#2E7D32"/>
+            <text x="990" y="165" class="component-text" fill="#333">Translation Engine</text>
+
+            <rect x="845" y="190" width="290" height="32" class="component-box" stroke="#2E7D32"/>
+            <text x="990" y="210" class="component-text" fill="#333">Semantic Analysis</text>
+
+            <rect x="845" y="235" width="290" height="32" class="component-box" stroke="#2E7D32"/>
+            <text x="990" y="255" class="component-text" fill="#333">Context Manager</text>
+
+            <rect x="845" y="280" width="290" height="32" class="component-box" stroke="#2E7D32"/>
+            <text x="990" y="300" class="component-text" fill="#333">Conversation Memory</text>
+
+            <rect x="845" y="325" width="290" height="32" class="component-box" stroke="#2E7D32"/>
+            <text x="990" y="345" class="component-text" fill="#333">LLM Core Engine (GPT-4)</text>
+
+            <!-- ============ LAYER 4: BANKING INTELLIGENCE ============ -->
+            <rect x="1220" y="40" width="360" height="370" class="layer-bg" fill="#e0f2f1"/>
+            <rect x="1220" y="40" width="360" height="370" stroke="#00695C" stroke-width="3" rx="10" fill="none"/>
+            <text x="1400" y="70" class="layer-label" fill="#00695C">🏦 BANKING CONTEXT ENGINE</text>
+
+            <rect x="1245" y="100" width="310" height="32" class="component-box" stroke="#00897B"/>
+            <text x="1400" y="120" class="component-text" fill="#333">Intent Classifier</text>
+            <text x="1400" y="134" class="component-subtext">(Account, Loan, Cards, etc.)</text>
+
+            <rect x="1245" y="155" width="310" height="32" class="component-box" stroke="#00897B"/>
+            <text x="1400" y="175" class="component-text" fill="#333">Bank Entity Recognition</text>
+
+            <rect x="1245" y="210" width="310" height="32" class="component-box" stroke="#00897B"/>
+            <text x="1400" y="230" class="component-text" fill="#333">Product Knowledge Base</text>
+
+            <rect x="1245" y="265" width="310" height="32" class="component-box" stroke="#00897B"/>
+            <text x="1400" y="285" class="component-text" fill="#333">RAG - Retrieval Pipeline</text>
+
+            <rect x="1245" y="320" width="310" height="32" class="component-box" stroke="#00897B"/>
+            <text x="1400" y="340" class="component-text" fill="#333">Process Recommendation</text>
+
+            <rect x="1245" y="360" width="310" height="32" class="component-box" stroke="#00897B"/>
+            <text x="1400" y="380" class="component-text" fill="#333">Policy & Compliance Check</text>
+
+            <!-- ============ LAYER 5: RESPONSE GENERATION ============ -->
+            <rect x="40" y="480" width="360" height="140" class="layer-bg" fill="#ede7f6"/>
+            <rect x="40" y="480" width="360" height="140" stroke="#512DA8" stroke-width="3" rx="10" fill="none"/>
+            <text x="220" y="510" class="layer-label" fill="#512DA8">💬 RESPONSE GENERATION</text>
+
+            <rect x="60" y="535" width="320" height="30" class="component-box" stroke="#512DA8"/>
+            <text x="220" y="555" class="component-text" fill="#333">LLM Response Builder</text>
+
+            <rect x="60" y="575" width="320" height="30" class="component-box" stroke="#512DA8"/>
+            <text x="220" y="595" class="component-text" fill="#333">Response Translator</text>
+
+            <!-- ============ LAYER 6: AUDIO SYNTHESIS ============ -->
+            <rect x="460" y="480" width="340" height="140" class="layer-bg" fill="#fff9c4"/>
+            <rect x="460" y="480" width="340" height="140" stroke="#F57F17" stroke-width="3" rx="10" fill="none"/>
+            <text x="630" y="510" class="layer-label" fill="#F57F17">🔊 AUDIO SYNTHESIS</text>
+
+            <rect x="480" y="535" width="300" height="30" class="component-box" stroke="#F57F17"/>
+            <text x="630" y="555" class="component-text" fill="#333">Text-to-Speech Engine</text>
+
+            <rect x="480" y="575" width="300" height="30" class="component-box" stroke="#F57F17"/>
+            <text x="630" y="595" class="component-text" fill="#333">Voice Response Stream</text>
+
+            <!-- ============ LAYER 7: STAFF INTERFACE ============ -->
+            <rect x="860" y="480" width="360" height="140" class="layer-bg" fill="#ffe0b2"/>
+            <rect x="860" y="480" width="360" height="140" stroke="#E65100" stroke-width="3" rx="10" fill="none"/>
+            <text x="1040" y="510" class="layer-label" fill="#E65100">📊 STAFF DASHBOARD</text>
+
+            <rect x="880" y="535" width="320" height="30" class="component-box" stroke="#E65100"/>
+            <text x="1040" y="555" class="component-text" fill="#333">Real-time Text Guidance</text>
+
+            <rect x="880" y="575" width="320" height="30" class="component-box" stroke="#E65100"/>
+            <text x="1040" y="595" class="component-text" fill="#333">Interaction Display Panel</text>
+
+            <!-- ============ LAYER 8: SUMMARY & LOGGING ============ -->
+            <rect x="1280" y="480" width="300" height="140" class="layer-bg" fill="#f1f8e9"/>
+            <rect x="1280" y="480" width="300" height="140" stroke="#558B2F" stroke-width="3" rx="10" fill="none"/>
+            <text x="1430" y="510" class="layer-label" fill="#558B2F">✍️ SUMMARY LAYER</text>
+
+            <rect x="1300" y="535" width="260" height="30" class="component-box" stroke="#558B2F"/>
+            <text x="1430" y="555" class="component-text" fill="#333">Conversation Summarizer</text>
+
+            <rect x="1300" y="575" width="260" height="30" class="component-box" stroke="#558B2F"/>
+            <text x="1430" y="595" class="component-text" fill="#333">Bilingual Summary</text>
+
+            <!-- ============ LAYER 9: BACKEND INTEGRATION ============ -->
+            <rect x="40" y="700" width="1540" height="140" class="layer-bg" fill="#ede7f6"/>
+            <rect x="40" y="700" width="1540" height="140" stroke="#512DA8" stroke-width="3" rx="10" fill="none"/>
+            <text x="810" y="730" class="layer-label" fill="#512DA8">🔗 SYSTEM INTEGRATION & STORAGE</text>
+
+            <rect x="60" y="755" width="220" height="30" class="component-box" stroke="#512DA8"/>
+            <text x="170" y="775" class="component-text" fill="#333">Core Banking (CBS)</text>
+
+            <rect x="300" y="755" width="220" height="30" class="component-box" stroke="#512DA8"/>
+            <text x="410" y="775" class="component-text" fill="#333">CRM System</text>
+
+            <rect x="540" y="755" width="220" height="30" class="component-box" stroke="#512DA8"/>
+            <text x="650" y="775" class="component-text" fill="#333">KYC Verification</text>
+
+            <rect x="780" y="755" width="220" height="30" class="component-box" stroke="#512DA8"/>
+            <text x="890" y="775" class="component-text" fill="#333">Document Manager</text>
+
+            <rect x="1020" y="755" width="220" height="30" class="component-box" stroke="#512DA8"/>
+            <text x="1130" y="775" class="component-text" fill="#333">Vector DB (Embeddings)</text>
+
+            <rect x="1260" y="755" width="300" height="30" class="component-box" stroke="#512DA8"/>
+            <text x="1410" y="775" class="component-text" fill="#333">Redis Cache & Session</text>
+
+            <!-- ============ LAYER 10: MONITORING & COMPLIANCE ============ -->
+            <rect x="40" y="920" width="1540" height="120" class="layer-bg" fill="#fff3e0"/>
+            <rect x="40" y="920" width="1540" height="120" stroke="#E65100" stroke-width="3" rx="10" fill="none"/>
+            <text x="810" y="950" class="layer-label" fill="#E65100">📈 MONITORING, ANALYTICS & COMPLIANCE</text>
+
+            <rect x="60" y="970" width="220" height="30" class="component-box" stroke="#E65100"/>
+            <text x="170" y="990" class="component-text" fill="#333">Performance Metrics</text>
+
+            <rect x="300" y="970" width="220" height="30" class="component-box" stroke="#E65100"/>
+            <text x="410" y="990" class="component-text" fill="#333">Latency Monitoring</text>
+
+            <rect x="540" y="970" width="220" height="30" class="component-box" stroke="#E65100"/>
+            <text x="650" y="990" class="component-text" fill="#333">Audit & Security Logs</text>
+
+            <rect x="780" y="970" width="220" height="30" class="component-box" stroke="#E65100"/>
+            <text x="890" y="990" class="component-text" fill="#333">Compliance Checker</text>
+
+            <rect x="1020" y="970" width="280" height="30" class="component-box" stroke="#E65100"/>
+            <text x="1160" y="990" class="component-text" fill="#333">Error Handling & Recovery</text>
+
+            <!-- ============ PRIMARY DATA FLOWS - ANIMATED ARROWS ============ -->
+            <!-- VOICE PATH FLOWS -->
+            <path class="flow-arrow flow-line-1 animated-dash" d="M 200 190 L 200 250" marker-end="url(#arrowhead-red)"/>
+            <path class="flow-arrow flow-line-1 animated-dash" d="M 200 410 L 200 480 Q 200 500 220 520" marker-end="url(#arrowhead-red)"/>
+
+            <!-- SIGN LANGUAGE PATH FLOWS -->
+            <path class="flow-arrow flow-line-6 animated-dash" d="M 580 190 L 580 250" marker-end="url(#arrowhead-pink)"/>
+            <path class="flow-arrow flow-line-6 animated-dash" d="M 580 410 L 580 480 Q 580 500 560 520" marker-end="url(#arrowhead-pink)"/>
+
+            <!-- CONVERGENCE TO LANGUAGE INTELLIGENCE -->
+            <path class="flow-arrow flow-line-2 pulse-arrow" d="M 360 330 L 820 330" marker-end="url(#arrowhead-cyan)"/>
+            <path class="flow-arrow flow-line-2 pulse-arrow" d="M 740 330 L 820 330" marker-end="url(#arrowhead-cyan)"/>
+
+            <!-- LANGUAGE INTELLIGENCE TO BANKING -->
+            <path class="flow-arrow flow-line-3 glow-arrow" d="M 1160 225 L 1220 225" marker-end="url(#arrowhead-blue)"/>
+
+            <!-- BANKING TO RESPONSE GENERATION -->
+            <path class="flow-arrow flow-line-4 pulse-arrow" d="M 1220 380 Q 920 430 400 550" marker-end="url(#arrowhead-green)"/>
+
+            <!-- RESPONSE TO TTS -->
+            <path class="flow-arrow flow-line-3 animated-dash" d="M 400 550 L 460 550" marker-end="url(#arrowhead-blue)"/>
+
+            <!-- TTS TO STAFF DASHBOARD -->
+            <path class="flow-arrow flow-line-5 animated-dash" d="M 800 550 L 860 550" marker-end="url(#arrowhead-yellow)"/>
+
+            <!-- RESPONSE TO SUMMARY -->
+            <path class="flow-arrow flow-line-4 animated-dash" d="M 800 550 L 1280 550" marker-end="url(#arrowhead-green)"/>
+
+            <!-- SUMMARY & RESPONSE TO INTEGRATION -->
+            <path class="flow-arrow flow-line-1 pulse-arrow" d="M 220 620 L 220 700" marker-end="url(#arrowhead-red)"/>
+            <path class="flow-arrow flow-line-1 pulse-arrow" d="M 630 620 L 630 700" marker-end="url(#arrowhead-red)"/>
+            <path class="flow-arrow flow-line-1 pulse-arrow" d="M 1430 620 L 1430 700" marker-end="url(#arrowhead-red)"/>
+
+            <!-- INTEGRATION TO MONITORING -->
+            <path class="flow-arrow flow-line-1 pulse-arrow" d="M 810 840 L 810 920" marker-end="url(#arrowhead-red)"/>
+
+            <!-- FEEDBACK LOOP FROM MONITORING -->
+            <path class="flow-arrow flow-line-2" stroke-dasharray="6,6" d="M 200 970 Q 100 800 100 100" marker-end="url(#arrowhead-cyan)" opacity="0.4" stroke-width="2"/>
+
+            <!-- Add connector dots at key junction points -->
+            <circle cx="200" cy="250" r="5" class="connector-dot" stroke="#FF6B6B"/>
+            <circle cx="580" cy="250" r="5" class="connector-dot" stroke="#FF8B94"/>
+            <circle cx="360" cy="330" r="5" class="connector-dot" stroke="#4ECDC4"/>
+            <circle cx="1160" cy="225" r="5" class="connector-dot" stroke="#45B7D1"/>
+            <circle cx="400" cy="550" r="5" class="connector-dot" stroke="#FF6B6B"/>
+            <circle cx="800" cy="550" r="5" class="connector-dot" stroke="#96CEB4"/>
+
+        </svg>
+
+
+        <!-- Enhanced Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #FF6B6B;"></div>
+                <span class="legend-text">🎤 Voice Input Pipeline</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #FF8B94;"></div>
+                <span class="legend-text">🤟 Sign Language Pipeline</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4ECDC4;"></div>
+                <span class="legend-text">🧠 Language Intelligence</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #45B7D1;"></div>
+                <span class="legend-text">🏦 Banking Context</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #96CEB4;"></div>
+                <span class="legend-text">💬 Response Generation</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #FFEAA7;"></div>
+                <span class="legend-text">🔊 Audio Synthesis</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #FFB347;"></div>
+                <span class="legend-text">📊 Staff Dashboard</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #C0E8A7;"></div>
+                <span class="legend-text">✍️ Summary & Logs</span>
+            </div>
+            <div class="legend-item">
+                <div style="width: 35px; height: 4px; border-radius: 2px; border-top: 3px dashed #333;"></div>
+                <span class="legend-text">🔄 Feedback Loop</span>
+            </div>
+            <div class="legend-item">
+                <div style="width: 35px; height: 6px; border-radius: 3px; background: linear-gradient(90deg, #FF6B6B, #FF8B94); box-shadow: 0 0 8px #FF6B6B;"></div>
+                <span class="legend-text">✨ Animated Flow</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
