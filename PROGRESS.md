@@ -49,21 +49,30 @@ and shows "connected", with schema, CI, and docs in place.
 ---
 
 ## Open items / waiting on the human
-- **PAUSE 1 (end of Phase 0):** provision GCP project + Vertex AI/Gemini + service-account
-  JSON; Supabase project (URL + anon + service-role keys); Sarvam AI API key (free tier);
-  Vercel account linked to the repo; GitHub Actions secrets. See `README.md` → Prerequisites.
-- **Commit the Phase 0 baseline (blocking):** the entire Sahayata scaffold (`api/`, `web/`,
-  `docs/`, `README.md`, `PROGRESS.md`, `LICENSE`, hardened `.gitignore`) is currently
-  **untracked** — it is not in any local commit, and `origin`
-  (`Sahayata-Ai-banking-assistant`) is **empty**. `main`/HEAD still points at the old Vite
-  prototype (`f7d6376`). This work exists only in the working tree and was nearly lost to a
-  filesystem sync this session. Decide the git strategy (e.g. reset `main` to a fresh root
-  commit, or commit the scaffold on top), commit, and push to `origin` to establish the
-  canonical baseline before the next build session.
+- **PAUSE 1 (end of Phase 0) — the only blocker:** provision GCP project + Vertex AI/Gemini +
+  service-account JSON; Supabase project (URL + anon + service-role keys); Sarvam AI API key
+  (free tier); Vercel account linked to the repo; GitHub Actions secrets. See `README.md` →
+  Prerequisites. Until these land, deployment (and Phase 1's real STT/TTS) cannot proceed.
+
+> **Resolved:** the Phase 0 baseline is committed and pushed — `origin/main` holds the full
+> scaffold (tip `37ea568`), and the old Vite prototype is preserved on `archive/vite-prototype`
+> (`ff30ea6`). The earlier "baseline uncommitted / origin empty" alarm no longer applies.
 
 ---
 
 ## Session log
+
+### 2026-06-17 — Baseline reconciliation & single-driver handoff (Claude)
+- **Context:** two Claude instances were editing this repo concurrently, causing the working
+  tree to swap contents mid-session (the "filesystem sync" churn). User chose to make **one
+  instance the sole driver**; the other is being stopped.
+- Re-verified the green state: backend `pytest` **2 passed** + `ruff` clean; frontend
+  `npm run build` compiles, types valid, 4 pages generated.
+- Confirmed the local working tree was **byte-for-byte identical** to `origin/main`; the
+  concurrent instance had already committed Phase 0 in clean logical units and pushed it.
+  Realigned local `main` to `origin/main` (`37ea568`) — **no force-push**, nothing clobbered.
+- Corrected this file's now-stale "Open items" (the baseline-commit alarm was already resolved).
+- **Next:** Phase 0 deployment and all of Phase 1 are blocked on **PAUSE 1** credentials.
 
 ### 2026-06-17 — Phase 0 audit & verification (Claude)
 - **Did not touch feature code.** Verified the backend scaffold and added project docs.
