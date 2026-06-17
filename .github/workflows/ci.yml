@@ -1,0 +1,128 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel superseded runs on the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Detect which parts of the monorepo changed, so jobs only run when relevant.
+  # ---------------------------------------------------------------------------
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      api: ${{ steps.filter.outputs.api }}
+      web: ${{ steps.filter.outputs.web }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            api:
+              - 'api/**'
+              - '.github/workflows/ci.yml'
+            web:
+              - 'web/**'
+              - '.github/workflows/ci.yml'
+
+  # ---------------------------------------------------------------------------
+  # Backend: lint (ruff) + SAST (bandit) + dependency audit (pip-audit) + tests.
+  # ---------------------------------------------------------------------------
+  api:
+    needs: changes
+    if: needs.changes.outputs.api == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+      - name: Lint (ruff)
+        run: ruff check .
+      - name: Format check (ruff)
+        run: ruff format --check .
+      - name: SAST (bandit)
+        run: bandit -c pyproject.toml -r app
+      - name: Dependency audit (pip-audit)
+        run: pip-audit
+      - name: Type check (mypy)
+        run: mypy app
+      - name: Tests (pytest)
+        run: pytest -q
+
+  # ---------------------------------------------------------------------------
+  # Frontend: lint (eslint) + typecheck (tsc) + build + dependency audit.
+  # ---------------------------------------------------------------------------
+  web:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint (eslint)
+        run: npm run lint
+      - name: Type check (tsc)
+        run: npm run typecheck
+      - name: Build
+        run: npm run build
+      - name: Dependency audit (npm)
+        run: npm audit --audit-level=high
+
+  # ---------------------------------------------------------------------------
+  # Secret scanning across the whole repo (always runs).
+  # ---------------------------------------------------------------------------
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan for secrets (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Aggregate gate: a single required status check for branch protection.
+  ci-ok:
+    if: always()
+    needs: [api, web, secrets]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all required jobs succeeded
+        run: |
+          if [ "${{ needs.api.result }}" = "failure" ] || \
+             [ "${{ needs.web.result }}" = "failure" ] || \
+             [ "${{ needs.secrets.result }}" = "failure" ]; then
+            echo "A required CI job failed."
+            exit 1
+          fi
+          echo "All required CI jobs passed (or were skipped)."

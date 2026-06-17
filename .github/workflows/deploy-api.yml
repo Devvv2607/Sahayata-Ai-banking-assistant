@@ -1,0 +1,60 @@
+name: Deploy API (Cloud Run)
+
+# Deploys the FastAPI backend to GCP Cloud Run on pushes to main that touch api/.
+# Requires the GitHub secrets / variables listed under "env" to be configured.
+# Uses Workload Identity Federation (no long-lived service-account JSON in CI).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'api/**'
+      - '.github/workflows/deploy-api.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write   # required for Workload Identity Federation
+
+env:
+  SERVICE_NAME: sahayata-api
+  REGION: ${{ vars.GCP_REGION }}
+  PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+  AR_REPO: sahayata
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Guard so forks / unconfigured repos do not attempt to deploy.
+    if: ${{ vars.GCP_PROJECT_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_DEPLOY_SERVICE_ACCOUNT }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+
+      - name: Build and push image
+        run: |
+          IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPO}/${SERVICE_NAME}:${GITHUB_SHA::8}"
+          docker build -t "$IMAGE" ./api
+          docker push "$IMAGE"
+          echo "IMAGE=$IMAGE" >> "$GITHUB_ENV"
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy "${SERVICE_NAME}" \
+            --image "${IMAGE}" \
+            --region "${REGION}" \
+            --platform managed \
+            --no-allow-unauthenticated \
+            --set-env-vars "APP_ENV=production" \
+            --set-secrets "SUPABASE_SERVICE_ROLE_KEY=supabase-service-role-key:latest,SARVAM_API_KEY=sarvam-api-key:latest"
