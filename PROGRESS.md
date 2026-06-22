@@ -39,7 +39,25 @@ and shows "connected", with schema, CI, and docs in place.
 > **Status:** Phase 0 scaffold is complete, validated, and pushed. The only remaining Phase 0
 > work is **deployment**, which is blocked on PAUSE 1 credentials (see "Open items" below).
 
-### Phase 1 — Core voice loop — _not started_
+### Phase 1 — Core voice loop — _code complete on mocks; awaiting Sarvam key + deploy_
+**Goal:** push-to-talk → STT + lang detect → translate → display; staff reply → translate → TTS.
+
+- [x] Provider abstraction: `SpeechProvider`/`TranslationProvider`/`LLMProvider` interfaces +
+      deterministic fakes + env-driven factory + Sarvam adapters (toggle-activated).
+- [x] Audio validation (type allowlist, size + duration caps, magic-byte check → 413/415).
+- [x] Turn endpoints: `POST /conversations`, `/turn/customer` (multipart), `/turn/staff`;
+      rate-limited; graceful TTS degradation; `GET /banking-processes`.
+- [x] `web/` officer copilot: 3-panel UI (speech / translation / copilot context) +
+      push-to-talk + staff reply with spoken-back audio.
+- [x] Tests (14 backend, mock providers) + real-server smoke test all green; committed + pushed.
+- [ ] Flip `SPEECH_PROVIDER`/`TRANSLATION_PROVIDER` to `sarvam` once `SARVAM_API_KEY` lands.
+- [ ] Acceptance (deployed): speak Hindi/Marathi/Tamil → English transcript; reply spoken back.
+
+> **Verified 2026-06-22:** backend pytest **14 passed**; ruff, ruff format, mypy --strict,
+> bandit, pip-audit clean. Web build + typecheck + eslint clean. Live uvicorn smoke test:
+> Marathi→English with `account_opening` intent + guidance/docs; staff reply → Marathi + audio.
+
+
 ### Phase 2 — Persistence & dashboard — _not started_
 ### Phase 3 — Banking intelligence (F4 + F10) — _not started_
 ### Phase 4 — Summaries & customer memory (F7 + F8) — _not started_
