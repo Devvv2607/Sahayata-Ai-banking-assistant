@@ -10,10 +10,15 @@ python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 cp .env.example .env               # fill in real values
-uvicorn app.main:app --reload --port 8000
+python -m app                      # preferred on Windows (sets a psycopg-compatible loop)
+# or: uvicorn app.main:app --reload --port 8000   (Linux/macOS)
 ```
 
-- Health check: <http://localhost:8000/health>
+> **Windows note:** psycopg's async pool cannot use the default ProactorEventLoop. Run the
+> backend with `python -m app`, which selects a compatible SelectorEventLoop. On Linux/macOS
+> (and Cloud Run) plain `uvicorn` is fine.
+
+- Health check: <http://localhost:8000/health> · DB check: <http://localhost:8000/health/db>
 - API docs (dev only): <http://localhost:8000/docs>
 
 ## Quality gates

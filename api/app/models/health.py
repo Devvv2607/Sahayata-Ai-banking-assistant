@@ -14,3 +14,9 @@ class HealthResponse(BaseModel):
     service: str = "sahayata-api"
     version: str
     environment: str
+
+
+class DbHealthResponse(BaseModel):
+    """Response body for ``GET /health/db``."""
+
+    database: Literal["connected", "unavailable", "disabled"]

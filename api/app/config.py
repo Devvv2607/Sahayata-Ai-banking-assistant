@@ -33,6 +33,8 @@ class Settings(BaseSettings):
     supabase_anon_key: str | None = None
     supabase_service_role_key: str | None = None
     supabase_jwt_audience: str = "authenticated"
+    # Direct Postgres connection string (used by the data layer).
+    supabase_db_url: str | None = None
 
     # --- Google Cloud / Vertex AI ---
     gcp_project_id: str | None = None

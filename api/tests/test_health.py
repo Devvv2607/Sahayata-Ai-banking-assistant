@@ -23,3 +23,10 @@ def test_security_headers_present() -> None:
     response = client.get("/health")
     assert response.headers["X-Content-Type-Options"] == "nosniff"
     assert response.headers["X-Frame-Options"] == "DENY"
+
+
+def test_health_db_responds() -> None:
+    # Deterministic regardless of whether a database is configured in the environment.
+    response = client.get("/health/db")
+    assert response.status_code == 200
+    assert response.json()["database"] in {"connected", "unavailable", "disabled"}

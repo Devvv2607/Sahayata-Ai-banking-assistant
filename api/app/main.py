@@ -7,7 +7,17 @@ in later phases.
 
 from __future__ import annotations
 
+import asyncio
 import logging
+import sys
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
+# psycopg's async pool is incompatible with Windows' default ProactorEventLoop. Selecting the
+# SelectorEventLoop here (at import, before the server creates its loop) keeps local Windows dev
+# working. No effect on Linux / Cloud Run, which already use a compatible loop.
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,6 +29,7 @@ from starlette.responses import Response
 
 from app import __version__
 from app.config import Settings, get_settings
+from app.db import database
 from app.logging_config import configure_logging
 from app.rate_limit import limiter
 from app.routers import banking_processes, conversations, health
@@ -52,6 +63,16 @@ def _validate_runtime_config(settings: Settings) -> None:
         )
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    """Open the DB pool on startup (if configured) and close it on shutdown."""
+    await database.open_pool()
+    try:
+        yield
+    finally:
+        await database.close_pool()
+
+
 def create_app() -> FastAPI:
     settings = get_settings()
     configure_logging(settings.log_level)
@@ -63,6 +84,7 @@ def create_app() -> FastAPI:
         description="AI orchestration backend for the bank branch voice copilot.",
         docs_url=None if settings.is_production else "/docs",
         redoc_url=None,
+        lifespan=lifespan,
     )
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]
