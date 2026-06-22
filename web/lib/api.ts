@@ -111,3 +111,53 @@ export function sendStaffTurn(
     body: JSON.stringify({ text, lang }),
   });
 }
+
+// --- Dashboard reads -------------------------------------------------------
+
+export const conversationListItemSchema = z.object({
+  id: z.string(),
+  customer_id: z.string().nullable(),
+  started_at: z.string(),
+  ended_at: z.string().nullable(),
+  primary_intent: z.string().nullable(),
+  escalated: z.boolean(),
+  utterance_count: z.number(),
+});
+export type ConversationListItem = z.infer<typeof conversationListItemSchema>;
+
+export function listConversations(
+  branchId?: string,
+  signal?: AbortSignal,
+): Promise<ConversationListItem[]> {
+  const q = branchId ? `?branch_id=${encodeURIComponent(branchId)}` : "";
+  return request(`/conversations${q}`, z.array(conversationListItemSchema), { signal });
+}
+
+export const utteranceSchema = z.object({
+  speaker: z.enum(["customer", "staff"]),
+  original_text: z.string(),
+  original_lang: z.string(),
+  translated_text: z.string().nullable(),
+  translated_lang: z.string().nullable(),
+  sentiment: z.string().nullable(),
+  created_at: z.string(),
+});
+
+export const conversationDetailSchema = z.object({
+  id: z.string(),
+  customer_id: z.string().nullable(),
+  started_at: z.string(),
+  ended_at: z.string().nullable(),
+  primary_intent: z.string().nullable(),
+  sentiment_label: z.string().nullable(),
+  escalated: z.boolean(),
+  utterances: z.array(utteranceSchema),
+});
+export type ConversationDetail = z.infer<typeof conversationDetailSchema>;
+
+export function getConversation(
+  id: string,
+  signal?: AbortSignal,
+): Promise<ConversationDetail> {
+  return request(`/conversations/${id}`, conversationDetailSchema, { signal });
+}

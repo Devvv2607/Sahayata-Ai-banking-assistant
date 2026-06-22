@@ -58,7 +58,21 @@ and shows "connected", with schema, CI, and docs in place.
 > Marathi→English with `account_opening` intent + guidance/docs; staff reply → Marathi + audio.
 
 
-### Phase 2 — Persistence & dashboard — _not started_
+### Phase 2 — Persistence & dashboard — _persistence + dashboard done; auth/RLS pending_
+- [x] Supabase project provisioned; schema + RLS + seed applied; app verified `/health/db`.
+- [x] `ConversationGateway` (in-memory + Supabase async psycopg); every turn persisted with
+      intent/sentiment/escalation roll-up.
+- [x] `GET /conversations?branch_id=` (list) + `GET /conversations/{id}` (bilingual transcript).
+- [x] `web/` dashboard: conversation list + transcript view, linked from the copilot.
+- [x] Decoupled `staff` from `auth.users` (standalone id + nullable `auth_user_id`) + demo staff.
+- [ ] Supabase Auth (staff login) + JWT verification + branch scoping from the token (auth slice).
+- [ ] Acceptance (full): second staff account cannot see another branch's data (needs auth).
+
+> **Verified 2026-06-22 (live Supabase):** create → customer + staff turns → `GET /{id}` returns
+> the persisted bilingual transcript (intent `account_opening`, 2 utterances); list returns it.
+> Backend 18 tests pass; ruff/format/mypy/bandit/pip-audit clean. Web build/typecheck/lint clean.
+
+
 ### Phase 3 — Banking intelligence (F4 + F10) — _not started_
 ### Phase 4 — Summaries & customer memory (F7 + F8) — _not started_
 ### Phase 5 — Sentiment & escalation (F9) + polish — _not started_

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   type CustomerTurn,
@@ -143,6 +144,12 @@ function Header({ recState, onNew }: { recState: string; onNew: () => void }) {
             <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" /> recording
           </span>
         )}
+        <Link
+          href="/dashboard"
+          className="rounded-lg border border-slate-700 px-3 py-1.5 text-sm hover:bg-slate-800"
+        >
+          Dashboard
+        </Link>
         <button
           onClick={onNew}
           className="rounded-lg border border-slate-700 px-3 py-1.5 text-sm hover:bg-slate-800"

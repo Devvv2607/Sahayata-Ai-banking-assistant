@@ -28,7 +28,9 @@ To avoid idle time while you click through dashboards, we run two tracks:
 ### ▶ Step 1 — Credentials (PAUSE 1) — _Track A, you_
 Set up in this order (easiest → most involved). Tell me as each is ready; secrets go in
 `.env` / GitHub Secrets, **never** in chat.
-- [ ] **1a. Supabase** — new project → copy `Project URL`, `anon key`, `service_role key`.
+- [x] **1a. Supabase** — project `npvffhoezkxbzbiwsuhn` provisioned; URL + publishable key in
+      `.env`; **schema + RLS + seed applied** and app verified `/health/db -> connected`.
+      *(Still need the `sb_secret_…` key for backend writes that bypass RLS.)*
 - [ ] **1b. Sarvam AI** — sign up → create free-tier `API key` (STT/TTS/translation).
 - [ ] **1c. Vercel** — sign up → link to the GitHub repo (frontend auto-deploy).
 - [ ] **1d. GCP / Vertex AI** — project + billing/credits → enable Vertex AI, Artifact
