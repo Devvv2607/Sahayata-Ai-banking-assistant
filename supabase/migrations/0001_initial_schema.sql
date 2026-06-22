@@ -15,9 +15,12 @@ create table if not exists public.branches (
     created_at  timestamptz not null default now()
 );
 
--- Staff are application users; id references Supabase auth.users.
+-- Staff are application users. `id` is a standalone key so staff can be seeded for the demo;
+-- `auth_user_id` links to a Supabase auth user once login is wired (Phase 2 auth). Decoupling
+-- from auth.users keeps the app-level model independent of the auth provider.
 create table if not exists public.staff (
-    id                 uuid primary key references auth.users (id) on delete cascade,
+    id                 uuid primary key default gen_random_uuid(),
+    auth_user_id       uuid        unique references auth.users (id) on delete set null,
     full_name          text        not null,
     email              text        not null unique,
     branch_id          uuid        not null references public.branches (id) on delete restrict,
@@ -27,6 +30,7 @@ create table if not exists public.staff (
     created_at         timestamptz not null default now()
 );
 create index if not exists staff_branch_id_idx on public.staff (branch_id);
+create index if not exists staff_auth_user_id_idx on public.staff (auth_user_id);
 
 -- Customers: pseudonymous. phone_hash is a hashed synthetic lookup key, never raw PII.
 create table if not exists public.customers (

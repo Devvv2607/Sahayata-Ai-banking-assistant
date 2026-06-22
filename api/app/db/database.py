@@ -51,6 +51,11 @@ def get_pool() -> AsyncConnectionPool:
     return _pool
 
 
+def is_available() -> bool:
+    """Whether a database connection pool has been initialized."""
+    return _pool is not None
+
+
 async def check_connection() -> bool:
     """Lightweight connectivity probe used by the health endpoint."""
     if _pool is None:

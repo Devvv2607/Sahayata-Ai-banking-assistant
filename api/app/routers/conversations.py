@@ -1,15 +1,19 @@
-"""Conversation and turn endpoints (Phase 1: in-memory, unauthenticated).
+"""Conversation and turn endpoints.
 
-Auth + persistence arrive in Phase 2. The AI/turn endpoints are rate-limited and the customer
-audio upload is strictly validated.
+Phase 1: turn pipeline (audio validation, STT/translate/analyze, TTS).
+Phase 2: persistence via the conversation gateway + dashboard read endpoints.
+Auth + branch scoping from the JWT arrive in the Phase 2 auth slice; until then conversations
+are attributed to the seeded demo staff/branch.
 """
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile
 
 from app.config import Settings, get_settings
 from app.models.turn import (
+    ConversationDetail,
+    ConversationListItem,
     CustomerTurnResponse,
     StaffTurnRequest,
     StaffTurnResponse,
@@ -23,35 +27,60 @@ from app.providers.factory import (
 )
 from app.rate_limit import TURN_RATE_LIMIT, limiter
 from app.services.audio_validation import AudioValidationError, validate_audio
-from app.services.conversation_store import Conversation, store
+from app.services.conversation_gateway import ConversationGateway, get_conversation_gateway
 from app.services.turn_service import TurnService
 
 router = APIRouter(prefix="/conversations", tags=["conversations"])
 
 
-def get_turn_service() -> TurnService:
-    """Build a TurnService from the env-selected providers."""
+def get_gateway() -> ConversationGateway:
+    return get_conversation_gateway()
+
+
+def get_turn_service(
+    gateway: ConversationGateway = Depends(get_gateway),
+) -> TurnService:
     return TurnService(
-        store=store,
+        gateway=gateway,
         speech=get_speech_provider(),
         translation=get_translation_provider(),
         llm=get_llm_provider(),
     )
 
 
-def _require_conversation(conversation_id: str) -> Conversation:
-    conversation = store.get(conversation_id)
-    if conversation is None:
+async def _require_conversation(conversation_id: str, gateway: ConversationGateway) -> None:
+    if not await gateway.exists(conversation_id):
         raise HTTPException(status_code=404, detail="Conversation not found.")
-    return conversation
 
 
 @router.post("", response_model=StartConversationResponse, status_code=201)
-async def start_conversation(payload: StartConversationRequest) -> StartConversationResponse:
-    conversation = store.create(customer_id=payload.customer_id)
+async def start_conversation(
+    payload: StartConversationRequest,
+    gateway: ConversationGateway = Depends(get_gateway),
+) -> StartConversationResponse:
+    conversation_id = await gateway.create(customer_id=payload.customer_id)
     return StartConversationResponse(
-        conversation_id=conversation.id, customer_id=conversation.customer_id
+        conversation_id=conversation_id, customer_id=payload.customer_id
     )
+
+
+@router.get("", response_model=list[ConversationListItem])
+async def list_conversations(
+    branch_id: str | None = Query(default=None),
+    gateway: ConversationGateway = Depends(get_gateway),
+) -> list[ConversationListItem]:
+    return await gateway.list(branch_id)
+
+
+@router.get("/{conversation_id}", response_model=ConversationDetail)
+async def get_conversation(
+    conversation_id: str,
+    gateway: ConversationGateway = Depends(get_gateway),
+) -> ConversationDetail:
+    detail = await gateway.get_detail(conversation_id)
+    if detail is None:
+        raise HTTPException(status_code=404, detail="Conversation not found.")
+    return detail
 
 
 @router.post("/{conversation_id}/turn/customer", response_model=CustomerTurnResponse)
@@ -61,9 +90,10 @@ async def customer_turn(
     conversation_id: str,
     audio: UploadFile = File(...),
     settings: Settings = Depends(get_settings),
+    gateway: ConversationGateway = Depends(get_gateway),
     service: TurnService = Depends(get_turn_service),
 ) -> CustomerTurnResponse:
-    conversation = _require_conversation(conversation_id)
+    await _require_conversation(conversation_id, gateway)
 
     data = await audio.read()
     try:
@@ -76,7 +106,7 @@ async def customer_turn(
     except AudioValidationError as err:
         raise HTTPException(status_code=err.status_code, detail=str(err)) from err
 
-    return await service.process_customer_turn(conversation, data, audio.content_type or "")
+    return await service.process_customer_turn(conversation_id, data, audio.content_type or "")
 
 
 @router.post("/{conversation_id}/turn/staff", response_model=StaffTurnResponse)
@@ -85,7 +115,8 @@ async def staff_turn(
     request: Request,
     conversation_id: str,
     payload: StaffTurnRequest,
+    gateway: ConversationGateway = Depends(get_gateway),
     service: TurnService = Depends(get_turn_service),
 ) -> StaffTurnResponse:
-    conversation = _require_conversation(conversation_id)
-    return await service.process_staff_turn(conversation, payload.text, payload.lang)
+    await _require_conversation(conversation_id, gateway)
+    return await service.process_staff_turn(conversation_id, payload.text, payload.lang)

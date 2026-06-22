@@ -6,6 +6,7 @@ All are strict Pydantic v2 models (``extra='forbid'``) so malformed data is reje
 
 from __future__ import annotations
 
+from datetime import datetime
 from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -99,3 +100,37 @@ class StaffTurnResponse(_Strict):
     audio_base64: str | None = Field(
         default=None, description="TTS audio; null if synthesis failed (graceful degradation)."
     )
+
+
+# --- Dashboard read models -------------------------------------------------
+
+
+class UtteranceOut(_Strict):
+    speaker: Speaker
+    original_text: str
+    original_lang: str
+    translated_text: str | None = None
+    translated_lang: str | None = None
+    sentiment: str | None = None
+    created_at: datetime
+
+
+class ConversationListItem(_Strict):
+    id: str
+    customer_id: str | None = None
+    started_at: datetime
+    ended_at: datetime | None = None
+    primary_intent: str | None = None
+    escalated: bool = False
+    utterance_count: int = 0
+
+
+class ConversationDetail(_Strict):
+    id: str
+    customer_id: str | None = None
+    started_at: datetime
+    ended_at: datetime | None = None
+    primary_intent: str | None = None
+    sentiment_label: str | None = None
+    escalated: bool = False
+    utterances: list[UtteranceOut] = Field(default_factory=list)

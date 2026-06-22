@@ -10,6 +10,7 @@
 -- ===========================================================================
 
 -- Helper: the branch_id of the currently authenticated staff member.
+-- Maps the Supabase auth user (auth.uid()) to its staff row via auth_user_id.
 create or replace function public.current_staff_branch_id()
 returns uuid
 language sql
@@ -17,7 +18,7 @@ stable
 security definer
 set search_path = public
 as $$
-    select branch_id from public.staff where id = auth.uid();
+    select branch_id from public.staff where auth_user_id = auth.uid();
 $$;
 
 -- --- branches: a staff member can read their own branch --------------------

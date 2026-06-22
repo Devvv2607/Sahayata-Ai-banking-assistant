@@ -69,6 +69,18 @@ insert into public.branches (id, name, city)
 values ('11111111-1111-1111-1111-111111111111', 'Sahayata Demo Branch — Pune Camp', 'Pune')
 on conflict (id) do nothing;
 
+-- --- Demo staff (auth_user_id linked once login is wired) -------------------
+insert into public.staff (id, full_name, email, branch_id, preferred_language, role)
+values (
+    '44444444-4444-4444-4444-444444444444',
+    'Demo Officer',
+    'officer@sahayata.demo',
+    '11111111-1111-1111-1111-111111111111',
+    'en',
+    'officer'
+)
+on conflict (id) do nothing;
+
 -- --- Demo customers (synthetic; phone_hash is a fake hashed key) -----------
 insert into public.customers (id, display_name, preferred_language, phone_hash)
 values
