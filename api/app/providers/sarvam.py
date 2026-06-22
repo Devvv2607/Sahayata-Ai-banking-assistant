@@ -42,7 +42,7 @@ class SarvamSpeechProvider(SpeechProvider):
             response = await client.post(
                 f"{_BASE_URL}/speech-to-text",
                 headers=self._headers,
-                data={"model": "saarika:v2", "language_code": "unknown"},
+                data={"model": "saarika:v2.5", "language_code": "unknown"},
                 files={"file": ("audio", audio, mime_type or "audio/wav")},
             )
             response.raise_for_status()

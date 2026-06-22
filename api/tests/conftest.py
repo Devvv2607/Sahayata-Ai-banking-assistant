@@ -3,7 +3,16 @@
 from __future__ import annotations
 
 import io
+import os
 import wave
+
+# Test isolation: force deterministic fakes and no database, regardless of any local .env.
+# Set as real environment variables (which take precedence over the .env file) BEFORE the app
+# (and its cached settings) are imported by the test modules.
+os.environ["SPEECH_PROVIDER"] = "fake"
+os.environ["TRANSLATION_PROVIDER"] = "fake"
+os.environ["LLM_PROVIDER"] = "fake"
+os.environ["SUPABASE_DB_URL"] = ""
 
 
 def make_wav(seconds: float = 0.5, rate: int = 8000) -> bytes:
