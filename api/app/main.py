@@ -12,16 +12,16 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-from slowapi.util import get_remote_address
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import Response
 
 from app import __version__
 from app.config import Settings, get_settings
 from app.logging_config import configure_logging
-from app.routers import health
+from app.rate_limit import limiter
+from app.routers import banking_processes, conversations, health
 
 logger = logging.getLogger(__name__)
 
@@ -57,8 +57,6 @@ def create_app() -> FastAPI:
     configure_logging(settings.log_level)
     _validate_runtime_config(settings)
 
-    limiter = Limiter(key_func=get_remote_address)
-
     app = FastAPI(
         title="Sahayata AI API",
         version=__version__,
@@ -79,6 +77,8 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(health.router)
+    app.include_router(conversations.router)
+    app.include_router(banking_processes.router)
 
     @app.exception_handler(Exception)
     async def _unhandled(request: Request, exc: Exception) -> JSONResponse:
